@@ -1,0 +1,28 @@
+{
+  "folders": [
+    {
+      "name": "ROOT",
+      "path": "./"
+    },
+    {
+      "name": "User",
+      "path": "./packages/user-service"
+    },
+    {
+      "name": "Post",
+      "path": "./packages/post-service"
+    }
+  ],
+  "settings": {
+    "files.exclude": {},
+    "peacock.color": "#61dafb",
+    "workbench.colorCustomizations": {
+      "commandCenter.border": "#15202b99",
+      "sash.hoverBorder": "#93e6fc",
+      "titleBar.activeBackground": "#61dafb",
+      "titleBar.activeForeground": "#15202b",
+      "titleBar.inactiveBackground": "#61dafb99",
+      "titleBar.inactiveForeground": "#15202b99"
+    }
+  }
+}

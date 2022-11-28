@@ -1,0 +1,68 @@
+version: '3'
+services:
+
+  #Zookeeper Service.
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    restart: "no"
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    container_name: zookeeper
+
+  #Kafka Service
+  kafka:
+    image: 'bitnami/kafka:latest'
+    container_name: kafka-broker
+    restart: "no"
+    ports:
+      - '9092:9092'
+      - '29092:29092'
+    environment:
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=INTERNAL://:29092,EXTERNAL://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - "zookeeper"
+  mongo_db:
+    container_name: db-container
+    image: mongo:latest
+    restart: always
+    expose:
+      - "27017"
+    volumes:
+      - mongo_db:/data/db
+    ports:
+      - "27017:27017"
+  user_app:
+    container_name: user_service
+    restart: always
+    build: ./packages/user-service
+    ports:
+      - "3000:3000"
+    links:
+      - mongo_db
+      - post_app
+    depends_on:
+      - mongo_db
+      - kafka
+      - post_app
+
+  post_app:
+    container_name: post_service
+    restart: always
+    build: ./packages/post-service
+    ports:
+      - "3001:3001"
+    links:
+      - mongo_db
+    depends_on:
+      - kafka
+      - mongo_db
+
+volumes:
+  mongo_db: {}

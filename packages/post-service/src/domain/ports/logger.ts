@@ -1,0 +1,3 @@
+interface Logger {
+  get(): any;
+}
